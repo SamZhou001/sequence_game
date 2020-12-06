@@ -38,7 +38,6 @@ body {
 
 .button2 {
     background-color: #008CBA;
-    padding: 30px 49px;
 }
 .button3 {background-color: #f44336;}
 
@@ -54,15 +53,15 @@ body {
     <p style = "text-align: center">Once you find them, click on these squares in increasing order.</p>
     <p style = "text-align: center">Have fun!</p>
     <br/>
-    <p style = "text-align: center">Choose your difficulty:</p>
+    <p style = "text-align: center">Choose your grid size:</p>
     <div class = "center">
         <div class = "vspace1">
-            <button class = "button" onclick ="startGame(4, 6, 30)"> Easy </button>
+            <button class = "button" onclick ="startGame(4, 6, 30)"> 4 x 4 </button>
         </div>
         <div class = "vspace1">
-            <button class = "button button2" onclick ="startGame(5, 6, 50)"> Medium </button>
+            <button class = "button button2" onclick ="startGame(5, 6, 50)"> 5 x 5 </button>
         </div>
-        <button class = "button button3" onclick ="startGame(6, 6, 99)"> Hard </button>
+        <button class = "button button3" onclick ="startGame(6, 6, 99)"> 6 x 6 </button>
     </div>
     <script src = "game.js">
     </script>
