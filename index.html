@@ -1,20 +1,71 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="description" content="This is a sequence game designed to train pattern recognition and numerical reasoning skills.">
+    <meta name="author" content="Sam Zhou & Jachin Friday">
+    <meta name="keywords" content="HTML, Javascript">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequence Game</title>
 <style>
 canvas {
-    padding-left: 0;
-    padding-right: 0;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
     display: block;
     border:1px solid #d3d3d3;
     background-color: #f1f1f1;
 }
+
+body {
+    background-color: lightblue;
+}
+
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 30px 60px;
+    text-align: center;
+    text-decoration: none;
+    margin: auto;
+    display: block;
+    font-size: 16px;
+}
+
+.button2 {
+    background-color: #008CBA;
+    padding: 30px 49px;
+}
+.button3 {background-color: #f44336;}
+
+.vspace1 {
+     margin-bottom: 1cm;
+}
 </style>
 </head>
-<body onload="startGame()">
-<script src = "game.js">
-</script>
+<body>
+    <h1 style = "text-align: center">Sequence Game</h1>
+    <h3 style = "text-align: center">Instructions</h2>
+    <p style = "text-align: center">From a grid, find 6 connected squares that form an arithmetic sequence.</p>
+    <p style = "text-align: center">Once you find them, click on these squares in increasing order.</p>
+    <p style = "text-align: center">Have fun!</p>
+    <br/>
+    <p style = "text-align: center">Choose your difficulty:</p>
+    <div class = "center">
+        <div class = "vspace1">
+            <button class = "button" onclick ="startGame(4, 6, 30)"> Easy </button>
+        </div>
+        <div class = "vspace1">
+            <button class = "button button2" onclick ="startGame(5, 6, 50)"> Medium </button>
+        </div>
+        <button class = "button button3" onclick ="startGame(6, 6, 99)"> Hard </button>
+    </div>
+    <script src = "game.js">
+    </script>
 
 </body>
 </html>

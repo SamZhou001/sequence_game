@@ -6,8 +6,25 @@ let step = 0;
 let myDim;
 let msgl1;
 let msgl2;
+let titlemsg2;
 
 function startGame(dim = 4, length = 6, maxNum = 30) {
+    const button = document.querySelectorAll('button');
+    for (b of button) {
+        b.disabled = true;
+        b.style.display = "none";
+    }
+    const h1 = document.querySelector('h1');
+    h1.style = "display: none;";
+    const h3 = document.querySelector('h3');
+    h3.style = "display: none;";
+    const p = document.querySelectorAll('p');
+    for (txt of p) {
+        txt.style = "display: none;";
+    }
+    myGameArea.start();
+    titlemsg2 = new component("40px", "Impact", "black", 108, 50, "text");
+    titlemsg2.text = "Sequence Game";
     myDim = dim;
     let x = 30;
     let y = 150;
@@ -38,13 +55,11 @@ function startGame(dim = 4, length = 6, maxNum = 30) {
             x += 30 + size;
         }
     }
-    console.log(answers);
-    myGameArea.start();
 }
 
 let myGameArea = {
     canvas : document.createElement("canvas"),
-    start : function() {
+    start: function() {
         this.canvas.width = 480;
         this.canvas.height = 600;
         this.context = this.canvas.getContext("2d");
@@ -63,8 +78,8 @@ let myGameArea = {
             myGameArea.y = e.pageY;
         })
         window.addEventListener('touchend', function (e) {
-        myGameArea.x = false;
-        myGameArea.y = false;
+            myGameArea.x = false;
+            myGameArea.y = false;
         })
     },
     clear : function() {
@@ -72,12 +87,12 @@ let myGameArea = {
     },
     stop : function() {
         clearInterval(this.interval);
-        let hideblock = new component(480, 140, "#F1F1F1", 0, 0);
+        let hideblock = new component(480, 80, "#F1F1F1", 0, 60);
         let restart_button = new component(80, 30, "lightgray", 200, 100);
         let restart_message = new component("15px", "Consolas", "black", 217, 120, "text");
         restart_message.text = "Restart";
-        let lose_message = new component("20px", "Consolas", "black", 118, 80, "text");
-        lose_message.text = "You lose. Good luck next time.";
+        let lose_message = new component("20px", "Consolas", "black", 90, 90, "text");
+        lose_message.text = "That's incorrect. Good luck next time.";
         hideblock.update();
         restart_button.update();
         restart_message.update();
@@ -90,12 +105,12 @@ let myGameArea = {
     },
     win : function() {
         clearInterval(this.interval);
-        let hideblock = new component(480, 140, "#F1F1F1", 0, 0);
+        let hideblock = new component(480, 80, "#F1F1F1", 0, 60);
         let restart_button = new component(80, 30, "lightgray", 200, 100);
         let restart_message = new component("15px", "Consolas", "black", 217, 120, "text");
         restart_message.text = "Restart";
-        let win_message = new component("20px", "Consolas", "black", 160, 80, "text");
-        win_message.text = "You win! Good job!";
+        let win_message = new component("20px", "Consolas", "black", 140, 90, "text");
+        win_message.text = "That's correct! Good job!";
         hideblock.update();
         restart_button.update();
         restart_message.update();
@@ -128,10 +143,10 @@ function component(width, height, color, x, y, type) {
         }
     }
     this.clicked = function() {
-        var myleft = this.x;
-        var myright = this.x + (this.width);
-        var mytop = this.y;
-        var mybottom = this.y + (this.height);
+        var myleft = this.x + (window.innerWidth - 480)/2;
+        var myright = this.x + (window.innerWidth - 480)/2 + (this.width);
+        var mytop = this.y + (window.innerHeight - 600)/2;
+        var mybottom = this.y + (window.innerHeight - 600)/2 + (this.height);
         var clicked = true;
         if ((mybottom < myGameArea.y) || (mytop > myGameArea.y) || (myright < myGameArea.x) || (myleft > myGameArea.x)) {
           clicked = false;
@@ -143,6 +158,7 @@ function component(width, height, color, x, y, type) {
     
 function updateGameArea() {
     myGameArea.clear();
+    titlemsg2.update();
     msgl1.update();
     msgl2.update();
     for (let j = 0; j < myDim * myDim; j++){
