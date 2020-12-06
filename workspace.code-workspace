@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"name": "js-basics",
+			"path": "../js-basics"
+		},
+		{
+			"name": "sequence_game",
+			"path": "."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "sequence_game"
+	}
+}

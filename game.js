@@ -14,7 +14,7 @@ function startGame() {
             x += 112.5;
         }
     }
-    console.log(constructPath(4, 6));
+    console.log(defineNums(4, 6, 30));
     myGameArea.start();
 }
 
@@ -116,20 +116,20 @@ function neighbors(num, d) {
     return ret;
 }
 
-function makeArray(d, l) {
+function makeArray(d, l, maxNum) {
     ret = [];
     if (l <= 2*d && d < 10) {
-        let startNum = Math.floor(Math.random() * 50) + 1;
-        let commonD = Math.floor(Math.random() * (100-startNum)/(l-1)) + 1;
+        let startNum = Math.floor(Math.random() * Math.floor(maxNum/2)) + 1;
+        let commonD = Math.floor(Math.random() * (maxNum-startNum)/(l-1)) + 1;
         for (let i = 0; i < l; i++) {
             ret.push(startNum + i * commonD);
         }
         let forbiddenNum1 = startNum - commonD;
         let forbiddenNum2 = startNum + l * commonD;
         for (let j = 0; j < d * d - l; j++) {
-            let newNum = Math.floor(Math.random() * 100) + 1;
+            let newNum = Math.floor(Math.random() * maxNum) + 1;
             while (newNum == forbiddenNum1 || newNum == forbiddenNum2 || ret.includes(newNum)) {
-                newNum = Math.floor(Math.random() * 100) + 1;
+                newNum = Math.floor(Math.random() * maxNum) + 1;
             }
             ret.push(newNum);
         }
@@ -145,9 +145,6 @@ function constructPath(d, l) {
         let n;
         let completed = false;
         for (let i = 1; i < l; i++) {
-            console.log(n);
-            console.log(current);
-            console.log(ret);
             n = neighbors(current, d);
             while (n.length != 0) {
                 let idx = Math.floor(Math.random() * n.length);
@@ -169,9 +166,19 @@ function constructPath(d, l) {
     }
 }
 
-/**
-function defineNums(d, l) {
-    let arr = makeArray(d, l);
-
+function defineNums(d, l, maxNum) {
+    let arr = makeArray(d, l, maxNum);
+    let path = constructPath(d, l);
+    let ret = [];
+    for (let i = 0; i < path.length; i++) {
+        ret[path[i]] = arr[i];
+    }
+    let idx = path.length;
+    for (let j = 0; j < d * d; j++) {
+        if (ret[j] == undefined) {
+            ret[j] = arr[idx];
+            idx ++;
+        }
+    }
+    return ret;
 }
-**/
