@@ -4,8 +4,10 @@ let nums = [];
 let answers = [];
 let step = 0;
 let myDim;
+let msgl1;
+let msgl2;
 
-function startGame(dim = 6, length = 6, maxNum = 100) {
+function startGame(dim = 4, length = 6, maxNum = 30) {
     myDim = dim;
     let x = 30;
     let y = 150;
@@ -14,13 +16,17 @@ function startGame(dim = 6, length = 6, maxNum = 100) {
     answers = arr[1];
     answers.sort((a) => nums[a]);
     let myNum;
+    msgl1 = new component("20px", "Consolas", "black", 97, 90, "text");
+    msgl1.text = "Find 6 connected squares that form";
+    msgl2 = new component("20px", "Consolas", "black", 140, 120, "text");
+    msgl2.text = "an arithmetic sequence!";
     for (let i = 0; i < dim * dim; i++) {
         let size = (480-(dim+1)*30)/dim;
         let myGamePiece = new component(size, size, "lightgray", x, y);
         if (numbers[i]<10) {
-            myNum = new component("30px", "Consolas", "black", x+(size-16.5)/2, y+(size+21.5)/2, "text")
+            myNum = new component("30px", "Consolas", "black", x+(size-16.5)/2, y+(size+21.5)/2, "text");
         } else {
-            myNum = new component("30px", "Consolas", "black", x+(size-32.5)/2, y+(size+21.5)/2, "text")
+            myNum = new component("30px", "Consolas", "black", x+(size-32.5)/2, y+(size+21.5)/2, "text");
         }
         myNum.text = numbers[i];
         buttons.push(myGamePiece);
@@ -66,11 +72,13 @@ let myGameArea = {
     },
     stop : function() {
         clearInterval(this.interval);
+        let hideblock = new component(480, 140, "#F1F1F1", 0, 0);
         let restart_button = new component(80, 30, "lightgray", 200, 100);
         let restart_message = new component("15px", "Consolas", "black", 217, 120, "text");
         restart_message.text = "Restart";
         let lose_message = new component("20px", "Consolas", "black", 118, 80, "text");
         lose_message.text = "You lose. Good luck next time.";
+        hideblock.update();
         restart_button.update();
         restart_message.update();
         lose_message.update();
@@ -82,11 +90,13 @@ let myGameArea = {
     },
     win : function() {
         clearInterval(this.interval);
+        let hideblock = new component(480, 140, "#F1F1F1", 0, 0);
         let restart_button = new component(80, 30, "lightgray", 200, 100);
         let restart_message = new component("15px", "Consolas", "black", 217, 120, "text");
         restart_message.text = "Restart";
         let win_message = new component("20px", "Consolas", "black", 160, 80, "text");
         win_message.text = "You win! Good job!";
+        hideblock.update();
         restart_button.update();
         restart_message.update();
         win_message.update();
@@ -133,6 +143,8 @@ function component(width, height, color, x, y, type) {
     
 function updateGameArea() {
     myGameArea.clear();
+    msgl1.update();
+    msgl2.update();
     for (let j = 0; j < myDim * myDim; j++){
         if (myGameArea.x && myGameArea.y) {
             if (buttons[j].clicked()) {
