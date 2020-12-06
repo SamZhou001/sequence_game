@@ -182,3 +182,12 @@ function defineNums(d, l, maxNum) {
     }
     return ret;
 }
+
+function chartNums(defineNums, updateGameArea) {
+    let arr = defineNums(d, l, maxNum);
+    ctx = myGameArea.context;
+    ctx.fillStyle = '#FFF';
+    for (let k = 0; k < arr.length; k++) {
+        ctx.fillText(arr[k], buttons[k].x, buttons[k].y)
+    }
+}
