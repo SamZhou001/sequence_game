@@ -1,20 +1,38 @@
 let clickedSquares = [];
 let buttons = [];
+let nums = [];
+let answers = [];
+let step = 0;
+let myDim;
 
-function startGame() {
+function startGame(dim = 6, length = 6, maxNum = 100) {
+    myDim = dim;
     let x = 30;
     let y = 150;
-    for (let i = 0; i < 16; i++) {
-        let myGamePiece = new component(82.5, 82.5, "lightgray", x, y);
-        buttons.push(myGamePiece);
-        if (i % 4 == 3) {
-            x = 30;
-            y += 112.5;
+    let arr = defineNums(dim, length, maxNum);
+    let numbers = arr[0];
+    answers = arr[1];
+    answers.sort((a) => nums[a]);
+    let myNum;
+    for (let i = 0; i < dim * dim; i++) {
+        let size = (480-(dim+1)*30)/dim;
+        let myGamePiece = new component(size, size, "lightgray", x, y);
+        if (numbers[i]<10) {
+            myNum = new component("30px", "Consolas", "black", x+(size-16.5)/2, y+(size+21.5)/2, "text")
         } else {
-            x += 112.5;
+            myNum = new component("30px", "Consolas", "black", x+(size-32.5)/2, y+(size+21.5)/2, "text")
+        }
+        myNum.text = numbers[i];
+        buttons.push(myGamePiece);
+        nums.push(myNum);
+        if (i % dim == dim - 1) {
+            x = 30;
+            y += 30 + size;
+        } else {
+            x += 30 + size;
         }
     }
-    console.log(defineNums(4, 6, 30));
+    console.log(answers);
     myGameArea.start();
 }
 
@@ -30,7 +48,7 @@ let myGameArea = {
             myGameArea.x = e.pageX;
             myGameArea.y = e.pageY;
         })
-          window.addEventListener('mouseup', function (e) {
+        window.addEventListener('mouseup', function (e) {
             myGameArea.x = false;
             myGameArea.y = false;
         })
@@ -45,10 +63,43 @@ let myGameArea = {
     },
     clear : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    stop : function() {
+        clearInterval(this.interval);
+        let restart_button = new component(80, 30, "lightgray", 200, 100);
+        let restart_message = new component("15px", "Consolas", "black", 217, 120, "text");
+        restart_message.text = "Restart";
+        let lose_message = new component("20px", "Consolas", "black", 118, 80, "text");
+        lose_message.text = "You lose. Good luck next time.";
+        restart_button.update();
+        restart_message.update();
+        lose_message.update();
+        setInterval(function() {
+            if (restart_button.clicked()) {
+                location.reload();
+            }
+        }, 20);
+    },
+    win : function() {
+        clearInterval(this.interval);
+        let restart_button = new component(80, 30, "lightgray", 200, 100);
+        let restart_message = new component("15px", "Consolas", "black", 217, 120, "text");
+        restart_message.text = "Restart";
+        let win_message = new component("20px", "Consolas", "black", 160, 80, "text");
+        win_message.text = "You win! Good job!";
+        restart_button.update();
+        restart_message.update();
+        win_message.update();
+        setInterval(function() {
+            if (restart_button.clicked()) {
+                location.reload();
+            }
+        }, 20);
     }
 }
 
-function component(width, height, color, x, y) {
+function component(width, height, color, x, y, type) {
+    this.type = type;
     this.width = width;
     this.height = height;
     this.speedX = 0;
@@ -57,8 +108,14 @@ function component(width, height, color, x, y) {
     this.y = y;    
     this.update = function(){
         ctx = myGameArea.context;
-        ctx.fillStyle = color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        if (this.type == "text") {
+            ctx.font = this.width + " " + this.height;
+            ctx.fillStyle = color;
+            ctx.fillText(this.text, this.x, this.y);
+        } else {
+            ctx.fillStyle = color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
     }
     this.clicked = function() {
         var myleft = this.x;
@@ -76,24 +133,28 @@ function component(width, height, color, x, y) {
     
 function updateGameArea() {
     myGameArea.clear();
-    for (let j = 0; j < 16; j++){
+    for (let j = 0; j < myDim * myDim; j++){
         if (myGameArea.x && myGameArea.y) {
             if (buttons[j].clicked()) {
-                let contains = false;
-                for (let i of clickedSquares) {
-                    if (i[0] == buttons[j].x && i[1] == buttons[j].y) {
-                        contains = true;
+                if (! clickedSquares.includes(j)) {
+                    clickedSquares.push(j);
+                    if (j == answers[step]) {
+                        step ++;
+                        buttons[j] = new component(buttons[j].width, buttons[j].height, "lime", buttons[j].x, buttons[j].y);
+                        if (step == 6) {
+                            myGameArea.win();
+                        }
+                    } else {
+                        buttons[j] = new component(buttons[j].width, buttons[j].height, "red", buttons[j].x, buttons[j].y);
+                        myGameArea.stop();
                     }
-                }
-                if (! contains) {
-                    clickedSquares.push([buttons[j].x, buttons[j].y]);
-                    buttons[j] = new component(buttons[j].width, buttons[j].height, "blue", buttons[j].x, buttons[j].y);
                 }
             }
         }
     }
-    for (let i = 0; i < 16; i++){
+    for (let i = 0; i < myDim * myDim; i++){
         buttons[i].update();
+        nums[i].update();
     }
 }
 
@@ -120,7 +181,7 @@ function makeArray(d, l, maxNum) {
     ret = [];
     if (l <= 2*d && d < 10) {
         let startNum = Math.floor(Math.random() * Math.floor(maxNum/2)) + 1;
-        let commonD = Math.floor(Math.random() * (maxNum-startNum)/(l-1)) + 1;
+        let commonD = Math.floor(Math.random() * ((maxNum-startNum)/(l-1)-1)) + 1;
         for (let i = 0; i < l; i++) {
             ret.push(startNum + i * commonD);
         }
@@ -140,7 +201,7 @@ function makeArray(d, l, maxNum) {
 function constructPath(d, l) {
     while (true) {
         let ret = [];
-        let current = Math.floor(Math.random() * d*d) + 1;
+        let current = Math.floor(Math.random() * d*d);
         ret.push(current);
         let n;
         let completed = false;
@@ -180,14 +241,8 @@ function defineNums(d, l, maxNum) {
             idx ++;
         }
     }
-    return ret;
-}
-
-function chartNums(defineNums, updateGameArea) {
-    let arr = defineNums(d, l, maxNum);
-    ctx = myGameArea.context;
-    ctx.fillStyle = '#FFF';
-    for (let k = 0; k < arr.length; k++) {
-        ctx.fillText(arr[k], buttons[k].x, buttons[k].y)
+    if (ret.includes(undefined)) {
+        console.log(path);
     }
+    return [ret, path];
 }
